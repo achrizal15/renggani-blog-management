@@ -4,4 +4,10 @@ class NotFoundError extends Error {
                 this.name = "NotFoundError";
         }
 }
-export { NotFoundError }
+class InvalidFileTypeError extends Error {
+        constructor(message) {
+                super(message)
+                this.name = "InvalidFileTypeError";
+        }
+}
+export { NotFoundError,InvalidFileTypeError }

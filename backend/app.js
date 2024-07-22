@@ -2,7 +2,6 @@ import express from "express";
 import db from "./models/index.js";
 import routes from './routes/api.js';
 import dotenv from 'dotenv';
-import multer from 'multer'
 import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
 
 dotenv.config()
@@ -12,8 +11,6 @@ const port = process.env.APP_PORT || 3001
 app.use(express.urlencoded({ extended: true }))
 // Middleware untuk parsing URL-encoded data
 app.use(express.json())
-// untuk menangani form-data
-app.use(multer().none())
 
 // Test database connection
 db.sequelize.authenticate()

@@ -12,7 +12,7 @@ const userCreateValidationRules = () => {
         }
         return true;
       }),
-    body('image').optional().isString().withMessage('Image should be a string'),
+    body('image').optional(),
     body('email').isEmail().withMessage('Email is required and should be a valid email address')
       .custom(async (value) => {
         const user = await User.findOne({ where: { email: value } });
@@ -21,9 +21,7 @@ const userCreateValidationRules = () => {
         }
         return true;
       }),
-    body('password').isString().notEmpty().withMessage('Password is required and should be a string'),
-    body('token').optional().isString().withMessage('Token should be a string'),
-    body('last_login_at').optional().isISO8601().withMessage('Last login date should be a valid date'),
+    body('password').isString().notEmpty().withMessage('Password is required and should be a string')
   ];
 };
 export default userCreateValidationRules

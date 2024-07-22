@@ -15,7 +15,6 @@ const userUpdateValidationRules = () => {
         }
         return true;
       }),
-    body('image').optional().isString().withMessage('Image should be a string'),
     body('email').isEmail().withMessage('Email is required and should be a valid email address')
       .custom(async (value, { req }) => {
         const userId = req.params.id
@@ -27,9 +26,6 @@ const userUpdateValidationRules = () => {
         }
         return true;
       }),
-    body('password').isString().notEmpty().withMessage('Password is required and should be a string'),
-    body('token').optional().isString().withMessage('Token should be a string'),
-    body('last_login_at').optional().isISO8601().withMessage('Last login date should be a valid date'),
   ];
 };
 export default userUpdateValidationRules

@@ -5,6 +5,7 @@ import userRoutes from './userRoutes.js'
 
 const router = express.Router()
 
+router.use('/public',express.static('public'))
 router.use('/api',blogRoutes)
 router.use('/api',userRoutes)
 router.use('/auth',authRoutes)

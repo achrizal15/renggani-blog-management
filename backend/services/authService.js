@@ -16,7 +16,7 @@ export const login = async (username, password) => {
 
     // Buat token JWT
     const accessToken = jwt.sign({ id: user.id, username: user.username },
-        process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '1h' });
+        process.env.JWT_ACCESS_TOKEN_SECRET, { expiresIn: '1d' });
     user.update({
         last_login_at: Date(),
         token: accessToken

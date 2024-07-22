@@ -1,15 +1,27 @@
 import db from '../models/index.js';
 import userCreateService from '../services/userCreateService.js'
+import userDeleteImageService from '../services/userDeleteImageService.js';
 import userUpdateService from '../services/userUpdateService.js';
+import validationResponse from "../utils/validationResponse.js";
 import { NotFoundError } from '../utils/errors.js';
 export const createUser = async (req, res, next) => {
         try {
                 const data = req.body
+                data.image = req.file ? `public/images/${req.file.filename}` : null
+                const { status, errors } = validationResponse(req, async (err) => {
+                        userDeleteImageService(data.image)
+                })
+                if (status == 400) {
+                        return res.status(status).json({ errors })
+                }
                 await userCreateService(data)
-                res.status(200).json({
+                return res.status(200).json({
                         message: "Berhasil di create"
                 });
         } catch (error) {
+                if (req.file) {
+                        userDeleteImageService(`public/images/${req.file.filename}`)
+                }
                 next(error)
         }
 }
@@ -45,22 +57,33 @@ export const updateUserById = async (req, res, next) => {
         try {
                 const id = req.params.id
                 const data = req.body
+                data.image = req.file ? `public/images/${req.file.filename}` : null
+                const { status, errors } = validationResponse(req, async (err) => {
+                        userDeleteImageService(data.image)
+                })
+                if (status == 400) {
+                        return res.status(status).json({ errors })
+                }
                 const user = await userUpdateService(id, data)
                 res.status(200).json({
                         message: 'Success Updated',
                         data: user
                 });
         } catch (error) {
+                if (req.file) {
+                        userDeleteImageService(`public/images/${req.file.filename}`)
+                }
                 next(error)
         }
 };
-export const deleteUser = async (req, res,next) => {
+export const deleteUser = async (req, res, next) => {
         try {
                 const id = req.params.id
                 const user = await db.User.findOne({ where: { id: id } });
                 if (!user) {
-                       throw new NotFoundError('User Not Found')
+                        throw new NotFoundError('User Not Found')
                 }
+                userDeleteImageService(user.image)
                 await user.destroy()
                 res.status(200).json({
                         message: 'Success Delete',
