@@ -1,6 +1,6 @@
 import express from "express";
 import db from "./models/index.js";
-import authRoutes from './routes/authRoutes.js';
+import routes from './routes/api.js';
 import dotenv from 'dotenv';
 
 dotenv.config()
@@ -23,7 +23,8 @@ db.sequelize.sync()
     .then(() => console.log('Database synced...'))
     .catch(err => console.log('Error: ' + err));
 
-app.use('/auth', authRoutes);
+app.use('/',routes);
+
 
 // not found
 app.use(function (req, res, next) {
