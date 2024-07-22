@@ -1,23 +1,29 @@
 import { body } from 'express-validator';
 import User from '../../models/users.js';
-const userCreateValidationRules = () => {
+const userUpdateValidationRules = () => {
   return [
     body('name').isString().notEmpty().withMessage('Name is required and should be a string'),
     body('username').isString().notEmpty()
       .withMessage('Username is required and should be a string')
-      .custom(async (value) => {
+      .custom(async (value, { req }) => {
+        const userId = req.params.id
         const user = await User.findOne({ where: { username: value } });
         if (user) {
-          throw new Error('Username already in use');
+          if (user.id != userId) {
+            throw new Error('Username already in use');
+          }
         }
         return true;
       }),
     body('image').optional().isString().withMessage('Image should be a string'),
     body('email').isEmail().withMessage('Email is required and should be a valid email address')
-      .custom(async (value) => {
+      .custom(async (value, { req }) => {
+        const userId = req.params.id
         const user = await User.findOne({ where: { email: value } });
         if (user) {
-          throw new Error('Email already in use');
+          if (user.id != userId) {
+            throw new Error('Email already in use')
+          }
         }
         return true;
       }),
@@ -26,4 +32,4 @@ const userCreateValidationRules = () => {
     body('last_login_at').optional().isISO8601().withMessage('Last login date should be a valid date'),
   ];
 };
-export default userCreateValidationRules
+export default userUpdateValidationRules

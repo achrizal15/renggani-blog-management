@@ -3,6 +3,7 @@ import db from "./models/index.js";
 import routes from './routes/api.js';
 import dotenv from 'dotenv';
 import multer from 'multer'
+import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
 
 dotenv.config()
 const app = express()
@@ -13,6 +14,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 // untuk menangani form-data
 app.use(multer().none())
+
 // Test database connection
 db.sequelize.authenticate()
     .then(() => console.log('Database connected...'))
@@ -24,7 +26,7 @@ db.sequelize.sync({alter: true})
     .catch(err => console.log('Error: ' + err));
 
 app.use('/',routes);
-
+app.use(errorHandlerMiddleware)
 // not found
 app.use(function (req, res, next) {
     res.status(404).json({
