@@ -3,7 +3,6 @@ import { verifyToken } from '../middleware/authMiddleware.js';
 import userCreateValidationRules from '../middleware/validators/userCreateValidationRules.js'
 import userUpdateValidationRules from '../middleware/validators/userUpdateValidationRules.js';
 import { createUser, getUsers, getUserById, deleteUser, updateUserById } from '../controllers/userController.js'
-import multer from 'multer'
 import configureMulter from '../services/fileUploadService.js'
 
 const router = express.Router();
