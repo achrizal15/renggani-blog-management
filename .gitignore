@@ -1,2 +1,3 @@
 backend/.env
+backend/public/images
 backend/node_modules
