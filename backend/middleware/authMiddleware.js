@@ -10,8 +10,11 @@ export const verifyToken = async (req, res, next) => {
     try {
         const decoded = jwt.verify(token, process.env.JWT_ACCESS_TOKEN_SECRET);
         req.user = decoded;
-        const user = await User.findOne({ where: { username: req.user.username } })
+        const user = await User.findOne({ attributes:['id','token'], where: { username: req.user.username } })
+
         if (user.token != token) {
+            user.token = null
+            user.save()
             throw "Token doesnt match";
         }
         next();
