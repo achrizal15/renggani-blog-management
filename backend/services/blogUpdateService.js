@@ -1,10 +1,8 @@
-import { FileNotFoundError } from "../utils/errors.js";
+
 import db from '../models/index.js'
-const blogCreateService = async (data) => {
+const blogUpdateService = async (id, data) => {
         const transaction = await db.sequelize.transaction()
-        if (!data.thumbnail) {
-                throw new FileNotFoundError('Thumbnail not found');
-        }
+     
         const [category] = await db.Category.findOrCreate({
                 where: { name: data.category },
                 transaction
@@ -17,30 +15,35 @@ const blogCreateService = async (data) => {
                 })
                 return tag;
         }))
-        const blog = db.Blog.build()
-        blog.title = data.title
-        blog.slug = data.slug
-        blog.sub_title = data.sub_title
-        blog.content = data.content
-        blog.thumbnail = data.thumbnail
-        blog.created_by = data.user.id
-        await blog.save({ transaction })
-
-        await blog.setCategory(category, { transaction })
-        await blog.setTags(tags, { transaction })
-        await transaction.commit()
-        return await db.Blog.findByPk(blog.id, {
+        
+        const blog = await db.Blog.findByPk(id, {
+                transaction,
                 include: [
                         'category',
                         'tags',
                         {
                                 model: db.User,
-                                as: 'creator',
+                                as: 'updater',
                                 attributes: {
                                         exclude: ['token', 'last_login_at', 'password']
                                 },
                         }
                 ]
         })
+        
+        blog.title = data.title
+        blog.slug = data.slug
+        blog.sub_title = data.sub_title
+        blog.content = data.content
+        if (data.thumbnail != null && blog.thumbnail != data.thumbnail) {
+                deleteFileService(user.image)
+                blog.thumbnail = data.thumbnail
+        }
+        blog.updated_by = data.user.id
+        await blog.setCategory(category, { transaction })
+        await blog.setTags(tags, { transaction })
+        await blog.save({ transaction })
+        await transaction.commit()
+        return await blog.reload()
 }
-export default blogCreateService
+export default blogUpdateService
