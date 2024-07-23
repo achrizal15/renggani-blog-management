@@ -6,3 +6,6 @@ export const getBlogs = (req, res) => {
     ];
     res.status(200).json(blogs);
 };
+export const createBlog=(req,res,next)=>{
+    
+}
