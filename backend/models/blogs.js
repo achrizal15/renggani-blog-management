@@ -48,7 +48,7 @@ const Blog = sequelize.define('Blog', {
     },
     category_id: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
         references: {
             model: 'Categories',
             key: 'id'
@@ -58,7 +58,10 @@ const Blog = sequelize.define('Blog', {
     timestamps: true
 });
 Blog.belongsTo(Category, {
-    foreignKey: 'category_id',
+    foreignKey: {
+        name: 'category_id',
+        allowNull: true
+    },
     as: 'category',
 });
 Blog.belongsTo(User, {
@@ -67,11 +70,8 @@ Blog.belongsTo(User, {
 });
 Blog.belongsTo(User, {
     foreignKey: 'updated_by',
-    as: 'updater',
+    as: 'updater'
 });
-Blog.belongsToMany(Tag, { through: 'BlogTags' });
-Blog.beforeCreate(async (blog, option) => {
-    console.log(option)
-    blog.created_by = 1
-})
+Blog.belongsToMany(Tag, { through: 'BlogTags', as: 'tags' });
+Tag.belongsToMany(Blog, { through: 'BlogTags' });
 export default Blog;

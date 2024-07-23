@@ -1,3 +1,6 @@
+import validationResponse from "../utils/validationResponse.js";
+import deleteFileService from "../services/deleteFileService.js"
+import blogCreateService from "../services/blogCreateService.js";
 export const getBlogs = (req, res) => {
     // Example: retrieve blogs from database (mock data used here)
     const blogs = [
@@ -6,6 +9,27 @@ export const getBlogs = (req, res) => {
     ];
     res.status(200).json(blogs);
 };
-export const createBlog=(req,res,next)=>{
-    
+export const createBlog = async (req, res, next) => {
+    try {
+        const data = req.body
+        data.user = req.user
+        data.thumbnail = req.file ? `public/images/blogs/${req.file?.filename}` : null
+        const { status, errors } = validationResponse(req, (err) => {
+            deleteFileService(data.thumbnail)
+        })
+        if (status) {
+            return res.status(status).json({ errors })
+        }
+        const blog = await blogCreateService(data);
+        return res.status(201).json({
+            message: 'Berhasil membuat blog',
+            data: blog
+        })
+    } catch (error) {
+        console.log(error)
+        if (req.file) {
+            deleteFileService(`public/images/blogs/${req.file?.filename}`)
+        }
+        next(error)
+    }
 }

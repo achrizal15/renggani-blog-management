@@ -1,6 +1,5 @@
 import fs from 'fs'
-import path from 'path'
-const userDeleteImageService = (filepath) => {
+const deleteFileService = (filepath) => {
         if (filepath) {
                 fs.unlink(filepath, (err) => {
                         if (err) {
@@ -9,4 +8,4 @@ const userDeleteImageService = (filepath) => {
                 })
         }
 }
-export default userDeleteImageService
+export default deleteFileService

@@ -1,6 +1,6 @@
 import User from "../models/users.js"
 import { NotFoundError } from "../utils/errors.js"
-import userDeleteImageService from './userDeleteImageService.js'
+import deleteFileService from './deleteFileService.js'
 const userUpdateService = async (id, data) => {
         const user = await User.findByPk(id, {
                 attributes: { exclude: ['password', 'token'] }
@@ -12,7 +12,7 @@ const userUpdateService = async (id, data) => {
         user.email = data.email
         user.name = data.name
         if (user.image != data.image && data.image != null) {
-                userDeleteImageService(user.image)
+                deleteFileService(user.image)
                 user.image = data.image
         }
         user.save()

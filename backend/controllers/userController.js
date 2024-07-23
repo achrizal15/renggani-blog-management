@@ -1,6 +1,6 @@
 import db from '../models/index.js';
 import userCreateService from '../services/userCreateService.js'
-import userDeleteImageService from '../services/userDeleteImageService.js';
+import deleteFileService from '../services/deleteFileService.js';
 import userUpdateService from '../services/userUpdateService.js';
 import validationResponse from "../utils/validationResponse.js";
 import { NotFoundError } from '../utils/errors.js';
@@ -9,7 +9,7 @@ export const createUser = async (req, res, next) => {
                 const data = req.body
                 data.image = req.file ? `public/images/${req.file.filename}` : null
                 const { status, errors } = validationResponse(req, async (err) => {
-                        userDeleteImageService(data.image)
+                        deleteFileService(data.image)
                 })
                 if (status == 400) {
                         return res.status(status).json({ errors })
@@ -20,7 +20,7 @@ export const createUser = async (req, res, next) => {
                 });
         } catch (error) {
                 if (req.file) {
-                        userDeleteImageService(`public/images/${req.file.filename}`)
+                        deleteFileService(`public/images/${req.file.filename}`)
                 }
                 next(error)
         }
@@ -59,7 +59,7 @@ export const updateUserById = async (req, res, next) => {
                 const data = req.body
                 data.image = req.file ? `public/images/${req.file.filename}` : null
                 const { status, errors } = validationResponse(req, async (err) => {
-                        userDeleteImageService(data.image)
+                        deleteFileService(data.image)
                 })
                 if (status == 400) {
                         return res.status(status).json({ errors })
@@ -71,7 +71,7 @@ export const updateUserById = async (req, res, next) => {
                 });
         } catch (error) {
                 if (req.file) {
-                        userDeleteImageService(`public/images/${req.file.filename}`)
+                        deleteFileService(`public/images/${req.file.filename}`)
                 }
                 next(error)
         }
@@ -83,7 +83,7 @@ export const deleteUser = async (req, res, next) => {
                 if (!user) {
                         throw new NotFoundError('User Not Found')
                 }
-                userDeleteImageService(user.image)
+                deleteFileService(user.image)
                 await user.destroy()
                 res.status(200).json({
                         message: 'Success Delete',
