@@ -1,13 +1,13 @@
 import validationResponse from "../utils/validationResponse.js";
-import deleteFileService from "../services/deleteFileService.js"
+import blogReleaseService from "../services/blogReleaseService.js"
 import blogCreateService from "../services/blogCreateService.js";
 import blogUpdateService from "../services/blogUpdateService.js";
-import {getFileUrl, storeFile} from "../services/minioService.js"
+import { getFileUrl, storeFile } from "../services/minioService.js"
 import db from "../models/index.js";
-export const getBlogs =async (req, res) => {
+export const getBlogs = async (req, res) => {
     const blogs = await db.Blog.findAll();
     res.status(200).json({
-        data: blogs.map(item=>{
+        data: blogs.map(item => {
             item.thumbnail = getFileUrl(item.thumbnail)
             return item
         })
@@ -44,6 +44,19 @@ export const updateBlog = async (req, res, next) => {
         const blog = await blogUpdateService(req.params.id, data);
         return res.status(201).json({
             message: 'Berhasil update blog',
+            data: blog
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+export const releaseBlog = async (req, res, next) => {
+    try {
+        const data = req.body
+        data.user = req.user
+        const blog = await blogReleaseService(req.params.id, data);
+        return res.status(201).json({
+            message: 'Berhasil released blog',
             data: blog
         })
     } catch (error) {

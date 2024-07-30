@@ -38,6 +38,14 @@ const Blog = sequelize.define('Blog', {
             key: 'id'
         }
     },
+    released_by: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+        references: {
+            model: 'Users',
+            key: 'id'
+        }
+    },
     updated_by: {
         type: DataTypes.INTEGER,
         allowNull: true,
@@ -54,6 +62,10 @@ const Blog = sequelize.define('Blog', {
             key: 'id'
         }
     },
+    released_at: {
+        type: DataTypes.DATE,
+        allowNull: true
+    }
 }, {
     timestamps: true
 });
@@ -63,6 +75,10 @@ Blog.belongsTo(Category, {
         allowNull: true
     },
     as: 'category',
+});
+Blog.belongsTo(User, {
+    foreignKey: 'updated_by',
+    as: 'publisher',
 });
 Blog.belongsTo(User, {
     foreignKey: 'created_by',
