@@ -36,22 +36,17 @@ export const updateBlog = async (req, res, next) => {
     try {
         const data = req.body
         data.user = req.user
-        data.thumbnail = req.file ? `public/images/blogs/${req.file?.filename}` : null
-        const { status, errors } = validationResponse(req, (err) => {
-            deleteFileService(data.thumbnail)
-        })
+        const { status, errors } = validationResponse(req)
         if (status) {
             return res.status(status).json({ errors })
         }
+        data.thumbnail = req.file ? await storeFile(req.file, "images/blogs") : null
         const blog = await blogUpdateService(req.params.id, data);
         return res.status(201).json({
             message: 'Berhasil update blog',
             data: blog
         })
     } catch (error) {
-        if (req.file) {
-            deleteFileService(`public/images/blogs/${req.file?.filename}`)
-        }
         next(error)
     }
 }

@@ -11,8 +11,8 @@ const userUpdateService = async (id, data) => {
         user.username = data.username
         user.email = data.email
         user.name = data.name
-        user.image = data.image
         if (user.image != data.image && data.image != null) {
+                user.image = data.image
                 await deleteFile(user.image)
         }
         user.save()

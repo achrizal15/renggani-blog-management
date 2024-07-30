@@ -10,7 +10,7 @@ const blogUpdateValidationRules = () => {
         const blogId = req.params.id
         const blog = await Blog.findOne({
           where: {
-            slug:value,
+            slug: value,
             id: {
               [Op.not]: blogId
             }

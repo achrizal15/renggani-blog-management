@@ -1,5 +1,6 @@
 
 import db from '../models/index.js'
+import { deleteFile, getFileUrl } from './minioService.js'
 const blogUpdateService = async (id, data) => {
         const transaction = await db.sequelize.transaction()
      
@@ -35,15 +36,17 @@ const blogUpdateService = async (id, data) => {
         blog.slug = data.slug
         blog.sub_title = data.sub_title
         blog.content = data.content
-        if (data.thumbnail != null && blog.thumbnail != data.thumbnail) {
-                deleteFileService(user.image)
+        if (blog.thumbnail != data.thumbnail && data.thumbnail != null) {
                 blog.thumbnail = data.thumbnail
+                await deleteFile(blog.thumbnail)
         }
         blog.updated_by = data.user.id
         await blog.setCategory(category, { transaction })
         await blog.setTags(tags, { transaction })
         await blog.save({ transaction })
         await transaction.commit()
-        return await blog.reload()
+        await blog.reload()
+        blog.thumbnail = getFileUrl(blog.thumbnail)
+        return blog
 }
 export default blogUpdateService
