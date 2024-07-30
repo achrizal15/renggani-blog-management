@@ -4,16 +4,16 @@ import userCreateValidationRules from '../middleware/validators/userCreateValida
 import userUpdateValidationRules from '../middleware/validators/userUpdateValidationRules.js';
 import { createUser, getUsers, getUserById, deleteUser, updateUserById } from '../controllers/userController.js'
 import configureMulter from '../services/fileUploadService.js'
-
+import multer from 'multer';
 const router = express.Router();
 const upload = configureMulter('public/images', ['image/png'])
-
+const uploads = multer({ storage: multer.memoryStorage() });
 router.get('/users', [verifyToken], getUsers);
 router.get('/users/:id', [verifyToken], getUserById);
 router.delete('/users/:id', [verifyToken], deleteUser);
 router.patch('/users/:id', [
         verifyToken, 
-        upload.single('image'),
+        uploads.single('image'),
         userUpdateValidationRules()
 ], updateUserById);
 router.post('/users', [

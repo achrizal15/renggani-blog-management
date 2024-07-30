@@ -1,4 +1,4 @@
-import Minio from 'minio';
+import * as Minio from 'minio'
 import dotenv from 'dotenv';
 
 // Load environment variables from .env file

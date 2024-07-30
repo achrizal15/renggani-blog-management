@@ -4,6 +4,7 @@ import deleteFileService from '../services/deleteFileService.js';
 import userUpdateService from '../services/userUpdateService.js';
 import validationResponse from "../utils/validationResponse.js";
 import { NotFoundError } from '../utils/errors.js';
+import { deleteFile, storeFile } from '../services/minioService.js';
 export const createUser = async (req, res, next) => {
         try {
                 const data = req.body
@@ -57,22 +58,17 @@ export const updateUserById = async (req, res, next) => {
         try {
                 const id = req.params.id
                 const data = req.body
-                data.image = req.file ? `public/images/${req.file.filename}` : null
-                const { status, errors } = validationResponse(req, async (err) => {
-                        deleteFileService(data.image)
-                })
+                const { status, errors } = validationResponse(req)
                 if (status == 400) {
                         return res.status(status).json({ errors })
                 }
+                data.image = req.file ? await storeFile(req.file, "images/users") : null
                 const user = await userUpdateService(id, data)
                 res.status(200).json({
                         message: 'Success Updated',
                         data: user
                 });
         } catch (error) {
-                if (req.file) {
-                        deleteFileService(`public/images/${req.file.filename}`)
-                }
                 next(error)
         }
 };
