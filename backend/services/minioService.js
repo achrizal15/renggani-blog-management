@@ -14,7 +14,7 @@ const storeFile = async (file, customPath = "", customName = "") => {
         };
 
         await minioClient.putObject(MINIO_BUCKET, filePath, file.buffer, metaData);
-        return path.join(MINIO_BUCKET, filePath).replace(/\\/g, '/');
+        return filePath;
 };
 
 const getFile = async (key) => {
