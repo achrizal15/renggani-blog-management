@@ -1,4 +1,5 @@
 import express from "express";
+import cors from 'cors'
 import db from "./models/index.js";
 import routes from './routes/api.js';
 import dotenv from 'dotenv';
@@ -7,6 +8,7 @@ import errorHandlerMiddleware from "./middleware/errorHandlerMiddleware.js";
 dotenv.config()
 const app = express()
 const port = process.env.APP_PORT || 3001
+app.use(cors())
 // middleware ini berfungsi agar req.body menjadi json
 app.use(express.urlencoded({ extended: true }))
 // Middleware untuk parsing URL-encoded data
