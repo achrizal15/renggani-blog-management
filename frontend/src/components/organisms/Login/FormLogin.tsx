@@ -1,4 +1,5 @@
 'use client'
+import Alert from '@/components/atoms/Alert/Alert';
 import Button from '@/components/atoms/Button/Button'
 import Input from '@/components/atoms/Input/Input';
 import FormInput from '@/components/molecules/FormInput/FormInput'
@@ -17,7 +18,9 @@ const FormLogin = () => {
                         errors
                 }
         } = useForm()
+        const [errorMessage, setErrorMessage] = React.useState<string>('')
         const onSubmit = async (data: any) => {
+                setErrorMessage('')
                 const { username, password } = data as FormDataLogin
                 const res = await fetch(`${process.env.API_BACKEND_URL}/auth/login`,
                         {
@@ -26,11 +29,17 @@ const FormLogin = () => {
                                         'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({ username, password })
-                        }
-                )
+                        })
+                        
+                if (!res.ok) {
+                        setErrorMessage('Credentials not valid!')
+                        return
+                }
+
         }
         return (
                 <form className='mt-5' onSubmit={handleSubmit(onSubmit)}>
+                        <Alert show={errorMessage != ""} variant='error'>{errorMessage}</Alert>
                         <FormInput
                                 type='text'
                                 id='username'

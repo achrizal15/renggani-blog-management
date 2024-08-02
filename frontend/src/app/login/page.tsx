@@ -1,5 +1,3 @@
-import Button from '@/components/atoms/Button/Button'
-import FormInput from '@/components/molecules/FormInput/FormInput'
 import FormLogin from '@/components/organisms/Login/FormLogin'
 import Image from 'next/image'
 import React from 'react'
